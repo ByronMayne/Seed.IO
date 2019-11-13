@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <Authors>Byron Mayne</Authors>
+    <Company>N/A</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Seed.IO is a library containing basic types and helper functions when working with paths.</Description>
+  </PropertyGroup>
+</Project>
