@@ -16,4 +16,4 @@ jobs:
     - name: Build with dotnet
       run: dotnet build ./Source/Seed.IO.sln --configuration Release
     - name: Run Unit Tests 
-      run: dotnet test ./Source/Seed.IO.Test/Seed.IO.Tests.csproj --configuration Release
+      run: dotnet test ./Source/Seed.IO.Tests/Seed.IO.Tests.csproj --configuration Release
