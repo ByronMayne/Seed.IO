@@ -81,7 +81,13 @@ namespace Seed.IO
             if (HasWinRoot(left))
                 return $@"{left}\{right}";
             if (HasUnixRoot(left))
-                return $"{left}{right}";
+            {
+                if(left.Length == 1)
+                {
+                    return $"{left}{right}";
+                }
+                return $"{left}/{right}";
+            }
 
             return $"{left}{separator}{right}";
         }

@@ -12,7 +12,7 @@ namespace Seed.IO
         }
 
         [Test]
-        public void SlashOverride()
+        public void WindowsSlash()
         {
             AbsolutePath lhs = (AbsolutePath)"C:\\";
             lhs /= "data";
@@ -21,6 +21,25 @@ namespace Seed.IO
             Assert.AreEqual("C:\\data\\tools", lhs.ToString());
             lhs /= "..";
             Assert.AreEqual("C:\\data", lhs.ToString());
+        }
+
+        [Test]
+        public void LinuxSlash()
+        {
+            AbsolutePath lhs = (AbsolutePath)"/";
+            Assert.AreEqual("/", lhs.ToString());
+
+            lhs /= "data";
+            Assert.AreEqual("/data", lhs.ToString());
+
+            lhs /= "images";
+            Assert.AreEqual("/data/images", lhs.ToString());
+
+            lhs /= "art";
+            Assert.AreEqual("/data/images/art", lhs.ToString());
+
+            lhs /= "..";
+            Assert.AreEqual("/data/images", lhs.ToString());
         }
     }
 }
