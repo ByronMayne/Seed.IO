@@ -1,5 +1,6 @@
 ﻿#nullable enable
 using System;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Seed.IO
@@ -7,6 +8,8 @@ namespace Seed.IO
 	/// <summary>
 	/// A relative path is a way to specify the location of a directory relative to another directory
 	/// </summary>
+	[Serializable]
+	[DebuggerDisplay("{m_path}")]
 	public struct RelativePath :
 		IEquatable<RelativePath>,
 		IComparable<RelativePath>,
@@ -15,11 +18,16 @@ namespace Seed.IO
 		private readonly string? m_path;
 		private readonly StringComparison m_stringComparison;
 		private readonly char m_seperator;
-		
+
 		/// <summary>
 		/// Gets an absolute path that has no value
 		/// </summary>
 		public static RelativePath Empty { get; }
+
+		/// <summary>
+		/// Gets a relative path that repersents the current directory
+		/// </summary>
+		public static RelativePath Current { get; }
 
 		/// <summary>
 		/// Gets if this absolute path has a value or not
@@ -29,6 +37,7 @@ namespace Seed.IO
 		static RelativePath()
 		{
 			Empty = new RelativePath("", null, false);
+			Current = new RelativePath(".", null, false);
 		}
 
 		/// <summary>
@@ -51,13 +60,12 @@ namespace Seed.IO
 		{
 			if (checkValue)
 			{
-				if (string.IsNullOrEmpty(path))
+				if (path == null) throw new ArgumentNullException(nameof(path));
+				if (path.Length == 0) throw new ArgumentException(nameof(path), "The parameter has to have a value.");
+
+				if (PathUtility.HasRoot(path))
 				{
-					throw new ArgumentNullException(nameof(path), "The parameter has to have a value.");
-				}
-				if (!PathUtility.HasRoot(path))
-				{
-					throw new ArgumentException(nameof(path), $"An relative path must be not rooted, the path sent in was '{path}'.");
+					throw new ArgumentException(nameof(path), $"An relative path must not be rooted, the path sent in was '{path}'.");
 				}
 			}
 			m_seperator = seperator ?? PathUtility.GetSeparator(path);
@@ -67,7 +75,7 @@ namespace Seed.IO
 				: StringComparison.Ordinal;
 		}
 
-		private RelativePath(SerializationInfo info, StreamingContext context)
+		internal RelativePath(SerializationInfo info, StreamingContext context)
 		{
 			m_path = info.GetString(nameof(m_path));
 			m_seperator = info.GetChar(nameof(m_seperator));
@@ -78,13 +86,52 @@ namespace Seed.IO
 		/// Allows paths to be combined using the forward slash operator 
 		/// </summary>
 		public static RelativePath operator /(RelativePath left, string right)
-			=> new RelativePath(PathUtility.Combine(left, right, left.m_seperator));
+		{
+			if (PathUtility.HasRoot(right))
+			{
+				throw new InvalidOperationException($"An relative path can't be combined with absolute path on the right hand side. " +
+					$"Base is '{left.m_path}' and is trying to be combined with '{right}'/.");
+			}
+			string path = PathUtility.Combine(left, right);
+			return new RelativePath(path, left.m_seperator);
+		}
+			
+
+		/// <summary>
+		/// Stops users from tryin to combine an absolute path on the right hand side of a 
+		/// relative path.
+		/// </summary>
+		[Obsolete("A AbsolutePath can't be combined with a relative path on the right hand side. Switch parameters around.", true)]
+		public static RelativePath operator /(RelativePath left, AbsolutePath right)
+			=> throw new InvalidOperationException("A absolute path can't be used on the right hand side.");
 
 		/// <summary>
 		/// Allows us to convert from strings to an absolute path. 
 		/// </summary>
 		public static explicit operator RelativePath(string path)
 			=> new RelativePath(path, null, true);
+
+		/// <summary>
+		/// Takes in a a string path and returns back a parsed
+		/// out <see cref="RelativePath"/>. If the path can not be parsed
+		/// an exception will be thrown.
+		/// </summary>
+		/// <param name="path">The path you want the relative path for</param>
+		/// <returns>The parsed out path</returns>
+		public static RelativePath Parse(string path)
+			=> new RelativePath(path, null, true);
+
+		/// <summary>
+		/// Takes in a string path and a seperator and returns a parsed
+		/// out relative path. If the path is not able to be parsed an exception will be
+		/// thrown.
+		/// </summary>
+		/// <param name="path">The path you want to parse</param>
+		/// <param name="seperator">The seperator that should be used</param>
+		/// <returns>The parsed out path</returns>
+		public static RelativePath Parse(string path, char seperator)
+			=> new RelativePath(path, seperator, true);
+
 
 		/// <summary>
 		/// Attempts to parse a string into an <see cref="AbsolutePath"/> if it's successful 
@@ -103,7 +150,7 @@ namespace Seed.IO
 			if (string.IsNullOrWhiteSpace(path))
 				return false;
 
-			if (!PathUtility.HasRoot(path))
+			if (PathUtility.HasRoot(path))
 				return false;
 
 			try

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.Serialization;
 
 namespace Seed.IO
@@ -9,6 +11,7 @@ namespace Seed.IO
 	/// </summary>
 
 	[Serializable]
+	[DebuggerDisplay("{m_path}")]
 	public struct AbsolutePath :
 		IEquatable<AbsolutePath>,
 		IComparable<AbsolutePath>,
@@ -45,22 +48,21 @@ namespace Seed.IO
 		{
 			if (checkValue)
 			{
-				if (string.IsNullOrEmpty(path))
-				{
-					throw new ArgumentNullException(nameof(path), "The parameter has to have a value.");
-				}
-				if (PathUtility.HasRoot(path))
+				if (path == null) throw new ArgumentNullException(nameof(path));
+				if (path.Length == 0) throw new ArgumentException(nameof(path), "The parameter has to have a value.");
+
+				if (!PathUtility.HasRoot(path))
 				{
 					throw new ArgumentException(nameof(path), $"An absolute path must be rooted, the path sent in was '{path}'.");
 				}
 			}
-			m_path = path;
+			m_path = PathUtility.Normalize(path);
 			m_stringComparison = PathUtility.HasWinRoot(m_path)
 				? StringComparison.OrdinalIgnoreCase
 				: StringComparison.Ordinal;
 		}
 
-		private AbsolutePath(SerializationInfo info, StreamingContext context)
+		internal AbsolutePath(SerializationInfo info, StreamingContext context)
 		{
 			m_path = info.GetString(nameof(m_path));
 			m_stringComparison = (StringComparison)info.GetInt32(nameof(m_stringComparison));
@@ -70,7 +72,15 @@ namespace Seed.IO
 		/// Allows paths to be combined using the forward slash operator 
 		/// </summary>
 		public static AbsolutePath operator /(AbsolutePath left, string right)
-			=> new AbsolutePath(PathUtility.Combine(left, right));
+		{
+			if(PathUtility.HasRoot(right))
+			{
+				throw new InvalidOperationException($"An absolute path can't be combined with another absolute path. " +
+					$"Base is '{left.m_path}' and is trying to be combined with '{right}'/.");
+			}
+			string path = PathUtility.Combine(left, right);
+			return new AbsolutePath(path, false);
+		}
 
 		/// <summary>
 		/// Allows us to convert from strings to an absolute path. 
@@ -85,6 +95,15 @@ namespace Seed.IO
 		[Obsolete("Two absolute paths can not be merged as they both have roots defined", true)]
 		public static AbsolutePath operator /(AbsolutePath left, AbsolutePath right)
 			=> throw new NotImplementedException();
+
+		/// <summary>
+		/// Parses a path into an absolute path, if the path is invalid 
+		/// and exception will be thrown
+		/// </summary>
+		/// <param name="path"></param>
+		/// <returns></returns>
+		public static AbsolutePath Parse(string path)
+			=> new AbsolutePath(path);
 
 		/// <summary>
 		/// Attempts to parse a string into an <see cref="AbsolutePath"/> if it's successful 
@@ -150,10 +169,83 @@ namespace Seed.IO
 			info.AddValue(nameof(m_path), m_path);
 		}
 
+		public RelativePath GetRelative(AbsolutePath relativeTo)
+		{
+			if(TryGetRelative(relativeTo, out RelativePath result))
+			{
+				return result;
+			}
+			
+			throw new InvalidOperationException($"The path {this} does not share a common root with '{relativeTo}'.");
+		}
+
+		/// <summary>
+		/// Attempts to get the relative path difference between two absolute paths. This only works if
+		/// both paths share a common root.
+		/// </summary>
+		/// <param name="relativeTo">TThe path to get a relative path for</param>
+		/// <param name="result">the resulting relative path</param>
+		/// <returns>True if a relative path could be created and false if it could not</returns>
+		public bool TryGetRelative(AbsolutePath relativeTo, out RelativePath result)
+		{
+			result = RelativePath.Empty;
+
+			string[] lhsComponents = PathUtility.GetComponents(this);
+			string[] rhsComponents = PathUtility.GetComponents(relativeTo);
+
+			int commonRoot = -1;
+
+			int length = Math.Min(lhsComponents.Length, rhsComponents.Length);
+
+			for(int i = 0; i < length; i++)
+			{
+				if(string.Equals(lhsComponents[i], rhsComponents[i], m_stringComparison))
+				{
+					commonRoot++;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			// No matching root 
+			if(commonRoot <= 0)
+			{
+				return false;
+			}
+
+			// Add one so that we take into account copying the first index
+			commonRoot += 1;
+
+			List<string> paths = new List<string>();
+
+			paths.Add(".");
+
+			// Add back tracks ../
+			for(int i = 0; i < lhsComponents.Length - commonRoot; i++)
+			{
+				paths.Add("..");
+			}
+			// Add difference 
+			for(int i = commonRoot; i < rhsComponents.Length; i++)
+			{
+				paths.Add(rhsComponents[i]);
+			}
+
+			char seperator = PathUtility.GetSeparator(this);
+
+			string builtPath = string.Join(seperator.ToString(), paths);
+
+			result = RelativePath.Parse(builtPath);
+
+			return true;
+		}
+
 		/// <summary>
 		/// Returns back the raw string of this path. 
 		/// </summary>
-		public static implicit operator string?(AbsolutePath path)
+		public static implicit operator string(AbsolutePath path)
 			=> path.ToString();
 
 		/// <summary>
