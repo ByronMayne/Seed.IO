@@ -7,5 +7,9 @@
     <Company>N/A</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Seed.IO is a library containing basic types and helper functions when working with paths.</Description>
+    <PackageProjectUrl>https://github.com/ByronMayne/Seed.IO</PackageProjectUrl>
+    <PackageLicenseExpression>Apache-2.0 License</PackageLicenseExpression>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
   </PropertyGroup>
 </Project>
