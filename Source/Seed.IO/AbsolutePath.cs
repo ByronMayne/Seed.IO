@@ -13,8 +13,8 @@ namespace Seed.IO
     /// An absolute value refers to the complete details needed to locate a file or 
     /// folder, starting from the root element and ending with the other subdirectories.
     /// </summary>
+    [DebuggerDisplay("{Value, nq}")]
     [TypeConverter(typeof(AbsolutePathTypeConverter))]
-    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public readonly struct AbsolutePath : IComparable<AbsolutePath>, IEquatable<AbsolutePath>, ISerializable
     {
         public readonly string Value;
@@ -47,16 +47,6 @@ namespace Seed.IO
             EntryAssemblyDirectory = new AbsolutePath(Path.GetDirectoryName(entryAssembly.Location));
             Default = new AbsolutePath("", false);
         }
-
-	[Serializable]
-	[DebuggerDisplay("{m_path}")]
-	public struct AbsolutePath :
-		IEquatable<AbsolutePath>,
-		IComparable<AbsolutePath>,
-		ISerializable
-	{
-		private readonly string? m_path;
-		private readonly StringComparison m_stringComparison;
 
         public AbsolutePath(string value) : this(PathUtility.Normalize(value)!, true)
         { }
@@ -137,7 +127,7 @@ namespace Seed.IO
                 path = Environment.ExpandEnvironmentVariables(path);
             }
 
-            if(!Path.IsPathRooted(path))
+            if (!Path.IsPathRooted(path))
             {
                 return false;
             }

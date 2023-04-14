@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.Serialization;
 
@@ -9,6 +10,7 @@ namespace Seed.IO
     /// <summary>
     /// A relative path is a way to specify the location of a directory relative to another directory
     /// </summary>
+    [DebuggerDisplay("{Value}")]
     public readonly struct RelativePath : IComparable<RelativePath>, IEquatable<RelativePath>, ISerializable
     {
         public readonly string Value;
@@ -28,7 +30,7 @@ namespace Seed.IO
         {
             Default = new RelativePath(".", false);
         }
-	[DebuggerDisplay("{m_path}")]
+
 
 
         public RelativePath(string value) : this(PathUtility.Normalize(value)!, true)
@@ -87,7 +89,6 @@ namespace Seed.IO
         /// <returns>True if the result could parse otherwise false</returns>
         public static bool TryParse(string path, out RelativePath relativePath)
             => TryParse(path, false, out relativePath);
-
 
         /// <summary>
         /// Attempts to parse a string into an <see cref="RelativePath"/>
