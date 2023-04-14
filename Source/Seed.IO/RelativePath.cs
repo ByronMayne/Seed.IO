@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,6 +28,7 @@ namespace Seed.IO
         {
             Default = new RelativePath(".", false);
         }
+	[DebuggerDisplay("{m_path}")]
 
 
         public RelativePath(string value) : this(PathUtility.Normalize(value)!, true)

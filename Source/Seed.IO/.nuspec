@@ -1,0 +1,13 @@
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <!-- Required elements-->
+        <id>Seed.IO</id>
+        <version>1.0.0</version>
+        <description>A library for working with absolute and relative paths</description>
+        <authors>Byron Mayne</authors>
+
+        <!-- Optional elements -->
+        <!-- ... -->
+    </metadata>
+    <!-- Optional 'files' node -->
+</package>

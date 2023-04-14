@@ -1,4 +1,4 @@
-﻿using Seed.IO.Converters;
+using Seed.IO.Converters;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -48,6 +48,15 @@ namespace Seed.IO
             Default = new AbsolutePath("", false);
         }
 
+	[Serializable]
+	[DebuggerDisplay("{m_path}")]
+	public struct AbsolutePath :
+		IEquatable<AbsolutePath>,
+		IComparable<AbsolutePath>,
+		ISerializable
+	{
+		private readonly string? m_path;
+		private readonly StringComparison m_stringComparison;
 
         public AbsolutePath(string value) : this(PathUtility.Normalize(value)!, true)
         { }

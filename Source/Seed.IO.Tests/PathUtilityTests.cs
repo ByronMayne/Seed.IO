@@ -1,6 +1,8 @@
 using System;
 using Xunit;
 
+using Xunit;
+
 namespace Seed.IO
 {
     public class PathUtilityTests
