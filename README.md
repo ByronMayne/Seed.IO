@@ -17,7 +17,7 @@ Strings are used as the go to type when working with file paths in code however 
 ## Concatenation
 Combining paths is one of the best features, you can never get the slash direction working
 ``` csharp
-AbsolutePath images = AbsolutePath.Parse("C:\\");
+AbsolutePath images = new AbsolutePath("C:\\");
 images \= "Images";
 images \= "Cats" \ "On Holidays";
 WriteLine(images);
