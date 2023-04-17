@@ -24,17 +24,20 @@ namespace Seed.IO
         /// <summary>
         /// Get if the <see cref="AbsolutePath"/> is currently the default value
         /// </summary>
-        public bool IsDefault => !string.IsNullOrWhiteSpace(Value);
+        public bool IsDefault => this == Default;
 
         static RelativePath()
         {
             Default = new RelativePath(".", false);
         }
 
-
-
         public RelativePath(string value) : this(PathUtility.Normalize(value)!, true)
-        { }
+        {
+            if(value == null)
+            {
+                throw new ArgumentNullException(nameof(value), "You must provide a non-null value for a relative path");
+            }
+        }
 
         private RelativePath(string value, bool validate)
         {
@@ -111,7 +114,7 @@ namespace Seed.IO
                 path = Environment.ExpandEnvironmentVariables(path);
             }
 
-            if (!Path.IsPathRooted(path))
+            if (Path.IsPathRooted(path))
             {
                 return false;
             }

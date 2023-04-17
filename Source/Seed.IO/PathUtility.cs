@@ -65,7 +65,7 @@ namespace Seed.IO
         {
             if (string.IsNullOrEmpty(path))
             {
-                return string.Empty;
+                return "";
             }
 
             path = Environment.ExpandEnvironmentVariables(path);
