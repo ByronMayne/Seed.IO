@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Publish 
-      uses: .\.github\workflows\shared\publish
+      uses: ./shared/publish
       with: 
         publish: false 
         configuration: Release
