@@ -1,18 +1,15 @@
 name: Build
 
-on:
-  release:
-    types: [published]
-  workflow_dispatch: {}
+on: [push]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Build 
-      uses: ./.github/actions/shared/publish
+      uses: .github\workflows\shared\build
       with: 
         publish: false 
         configuration: Release
         solutionPath: ./src/Seed.IO.sln
-        nugetApiKey: ${{ secrets.NUGET_API_KEY }}
+

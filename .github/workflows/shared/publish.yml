@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build
-        uses: ./.github/actions/shared/build
+        uses: .github\workflows\shared\build
         with:
           publish: false
           solutionPath: ${{ inputs.solutionPath }}
