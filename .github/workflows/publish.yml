@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Publish 
-      uses: ./shared/publish
+      uses: ./shared/publish.yml
       with: 
         publish: false 
         configuration: Release

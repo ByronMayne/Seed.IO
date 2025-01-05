@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build
-        uses: ./build
+        uses: ./build.yml
         with:
           publish: false
           solutionPath: ${{ inputs.solutionPath }}

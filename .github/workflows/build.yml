@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Build 
-      uses: ./shared/build
+      uses: ./shared/build.yml
       with: 
         publish: false 
         configuration: Release
