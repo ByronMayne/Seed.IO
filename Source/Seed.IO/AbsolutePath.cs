@@ -79,7 +79,7 @@ namespace Seed.IO
         }
 
         /// <summary>
-        /// Allows for combining paths using the devision operator 
+        /// Allows for combining paths using the division operator 
         /// </summary>
         public static AbsolutePath operator /(AbsolutePath left, string right)
             => new AbsolutePath(PathUtility.Combine(left, right));
@@ -105,15 +105,21 @@ namespace Seed.IO
         public static bool TryParse(string path, out AbsolutePath absolutePath)
             => TryParse(path, false, out absolutePath);
 
+        /// <summary>
+        /// Gets the directory where where the assembly of the provided type is located
+        /// </summary>
+        /// <typeparam name="T">The type to get the assembly directory from</typeparam>
+        public static AbsolutePath AssemblyDirectoryOfType<T>()
+            => new AbsolutePath(typeof(T).Assembly.Location);
 
         /// <summary>
         /// Attempts to parse a string into an <see cref="AbsolutePath"/>
         /// </summary>
         /// <param name="path">The path to parse</param>
-        /// <param name="expandVaraibles">If true the enviroment variables will be expanded using <see cref="Environment.ExpandEnvironmentVariables(string)"/></param>
+        /// <param name="expandVariables">If true the environment variables will be expanded using <see cref="Environment.ExpandEnvironmentVariables(string)"/></param>
         /// <param name="absolutePath">The result if it could be parsed</param>
         /// <returns>True if the result could parse otherwise false</returns>
-        public static bool TryParse(string path, bool expandVaraibles, out AbsolutePath absolutePath)
+        public static bool TryParse(string path, bool expandVariables, out AbsolutePath absolutePath)
         {
             absolutePath = Default;
 
@@ -122,7 +128,7 @@ namespace Seed.IO
                 return false;
             }
 
-            if (expandVaraibles)
+            if (expandVariables)
             {
                 path = Environment.ExpandEnvironmentVariables(path);
             }

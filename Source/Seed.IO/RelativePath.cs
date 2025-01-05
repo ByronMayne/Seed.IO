@@ -67,7 +67,7 @@ namespace Seed.IO
         }
 
         /// <summary>
-        /// Allows for combining paths using the devision operator 
+        /// Allows for combining paths using the division operator 
         /// </summary>
         public static RelativePath operator /(RelativePath left, string right)
             => new RelativePath(PathUtility.Combine(left, right));
@@ -97,10 +97,10 @@ namespace Seed.IO
         /// Attempts to parse a string into an <see cref="RelativePath"/>
         /// </summary>
         /// <param name="path">The path to parse</param>
-        /// <param name="expandVaraibles">If true the enviroment variables will be expanded using <see cref="Environment.ExpandEnvironmentVariables(string)"/></param>
+        /// <param name="expandVariables">If true the environment variables will be expanded using <see cref="Environment.ExpandEnvironmentVariables(string)"/></param>
         /// <param name="relativePath">The result if it could be parsed</param>
         /// <returns>True if the result could parse otherwise false</returns>
-        public static bool TryParse(string path, bool expandVaraibles, out RelativePath relativePath)
+        public static bool TryParse(string path, bool expandVariables, out RelativePath relativePath)
         {
             relativePath = Default;
 
@@ -109,7 +109,7 @@ namespace Seed.IO
                 return false;
             }
 
-            if (expandVaraibles)
+            if (expandVariables)
             {
                 path = Environment.ExpandEnvironmentVariables(path);
             }

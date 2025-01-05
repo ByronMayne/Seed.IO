@@ -12,7 +12,7 @@ namespace Seed.IO
         /// </summary>
         public const char WINDOWS_SEPARATOR = '\\';
         /// <summary>
-        /// The separator used in linux paths
+        /// The separator used in Linux paths
         /// </summary>
         public const char LINUX_SEPARATOR = '/';
         /// <summary>
