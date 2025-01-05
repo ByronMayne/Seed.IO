@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Build 
-      uses: .github\workflows\shared\build
+      uses: .\.github\workflows\shared\build
       with: 
         publish: false 
         configuration: Release
