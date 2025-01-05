@@ -1,18 +1,31 @@
 name: Build
-
 on:
-  release:
-    types: [published]
-  workflow_dispatch: {}
-
+  workflow_call:
+    inputs:
+      publish:
+        required: true
+        type: boolean
+      solutionPath:
+        required: true
+        type: string
+      configuration:
+        required: false 
+        type: string 
+        default: Release
+    secrets:
+      NUGET_API_KEY:
+        required: true
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Publish 
-      uses: ./shared/publish.yml
-      with: 
-        publish: false 
-        configuration: Release
-        solutionPath: ./src/Seed.IO.sln
-        nugetApiKey: ${{ secrets.NUGET_API_KEY }}
+      - name: Build
+        uses: ./.github/workflows/build.yml
+        with:
+          publish: false
+          solutionPath: ${{ inputs.solutionPath }}
+          configuration: ${{ inputs.configuration }}
+      - name: Pack 
+        run: dotnet pack ${{ inputs.solutionPath }} ${{ inputs.configuration }} --output ./.artifacts
+      - name: Push 
+        run: dotnet nuget push ./artifacts/*nupkg --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json
