@@ -10,7 +10,7 @@ env:
   configuration: Release
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
     - name: CheckOut
