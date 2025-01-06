@@ -1,4 +1,4 @@
-name: Build
+name: Publish
 
 on:
   release:
@@ -19,13 +19,13 @@ jobs:
         ref: ${{ github.head_ref }} 
         fetch-depth: 0  
     - name: Build 
-      uses: ./.github/actions/build
+      uses: ByronMayne/Shared.Actions/build_csharp@1.0.1
       with: 
         publish: false 
         configuration: ${{ env.configuration }}
         solutionPath:  ${{ env.solutionPath }}
     - name: Publish 
-      uses: ./.github/actions/publish
+      uses: ByronMayne/Shared.Actions/publish_csharp_nuget@1.0.1
       with: 
         publish: true 
         configuration: ${{ env.configuration }}
