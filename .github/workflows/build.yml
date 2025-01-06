@@ -17,7 +17,7 @@ jobs:
         ref: ${{ github.head_ref }} 
         fetch-depth: 0  
     - name: Build 
-      uses: ./.github/actions/build
+      uses: ByronMayne/Shared.Actions/.github/actions/build
       with: 
         publish: false 
         configuration: ${{ env.configuration }}
