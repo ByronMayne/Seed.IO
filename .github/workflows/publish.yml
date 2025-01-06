@@ -6,7 +6,7 @@ on:
   workflow_dispatch: {}
 
 env:
-  solutionPath: ./src/Seed.IO.sln
+  solutionPath: ./Source/Seed.IO.sln
   configuration: Release
 
 jobs:

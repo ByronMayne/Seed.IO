@@ -2,6 +2,11 @@ name: Build
 
 on: [push]
 
+env:
+  solutionPath: ./Source/Seed.IO.sln
+  configuration: Release
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -14,6 +19,6 @@ jobs:
       uses: ./.github/actions/build
       with: 
         publish: false 
-        configuration: Release
-        solutionPath: ./src/Seed.IO.sln
+        configuration: ${{ env.configuration }}
+        solutionPath: ${{ env.solutionPath }}
 
