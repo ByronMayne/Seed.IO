@@ -1,0 +1,25 @@
+name: Publish
+description: Builds and publish nuget packages to Nuget.Org 
+inputs:
+  publish:
+    required: true
+    description: True if the packages should be published to NuGet
+  solutionPath:
+    required: true
+    description: The path to the solution on disk 
+  configuration:
+    required: false 
+    default: Release
+    description: Sets the configuration that the build will be made with 
+  nugetApiKey: 
+    required: true 
+    description: The api key used to publish to nuget 
+runs:
+  using: composite
+  steps:
+    - name: Pack 
+      shell: bash 
+      run: dotnet pack ${{ inputs.solutionPath }} ${{ inputs.configuration }} --output ./.artifacts
+    - name: Push 
+      shell: bash 
+      run: dotnet nuget push ./artifacts/*nupkg --skip-duplicate --api-key ${{ inputs.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json

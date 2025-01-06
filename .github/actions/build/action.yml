@@ -1,0 +1,27 @@
+name: Build
+description: "Builds a CSharp solution using the command line"
+
+inputs:
+  publish:
+    required: true
+    description: "True if the packages should be published to NuGet"
+  solutionPath:
+    required: true
+    description: The relative path on disk where the solution exists
+  configuration:
+    required: false
+    default: "Release"
+    description: The build configuration to use
+runs:
+  using: "composite"
+  steps:
+    - name: Install Dotnet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Build
+      shell: bash
+      run: dotnet build ${{ inputs.solutionPath }} --configuration ${{ inputs.configuration }}
+    - name: Test
+      shell: bash
+      run: dotnet build ${{ inputs.solutionPath }} --configuration ${{ inputs.configuration }}

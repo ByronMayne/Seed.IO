@@ -5,14 +5,29 @@ on:
     types: [published]
   workflow_dispatch: {}
 
+env:
+  solutionPath: ./Source/Seed.IO.sln
+  configuration: Release
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Publish 
-      uses: .\.github\workflows\shared\publish
+    - name: CheckOut
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }} 
+        fetch-depth: 0  
+    - name: Build 
+      uses: ./.github/actions/build
       with: 
         publish: false 
-        configuration: Release
-        solutionPath: ./src/Seed.IO.sln
+        configuration: ${{ env.configuration }}
+        solutionPath:  ${{ env.solutionPath }}
+    - name: Publish 
+      uses: ./.github/actions/publish
+      with: 
+        publish: true 
+        configuration: ${{ env.configuration }}
+        solutionPath: ${{ env.solutionPath }}
         nugetApiKey: ${{ secrets.NUGET_API_KEY }}

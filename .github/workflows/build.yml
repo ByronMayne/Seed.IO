@@ -2,14 +2,24 @@ name: Build
 
 on: [push]
 
+env:
+  solutionPath: ./Source/Seed.IO.sln
+  configuration: Release
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: CheckOut
+      uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }} 
+        fetch-depth: 0  
     - name: Build 
-      uses: .\.github\workflows\shared\build
+      uses: ./.github/actions/build
       with: 
         publish: false 
-        configuration: Release
-        solutionPath: ./src/Seed.IO.sln
+        configuration: ${{ env.configuration }}
+        solutionPath: ${{ env.solutionPath }}
 
