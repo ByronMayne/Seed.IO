@@ -19,7 +19,7 @@ runs:
   steps:
     - name: Pack 
       shell: bash 
-      run: dotnet pack ${{ inputs.solutionPath }} ${{ inputs.configuration }} --output ./.artifacts
+      run: dotnet pack ${{ inputs.solutionPath }}  --configuration ${{ inputs.configuration }} --output ./.artifacts
     - name: Push 
       shell: bash 
       run: dotnet nuget push ./artifacts/*nupkg --skip-duplicate --api-key ${{ inputs.NUGET_API_KEY }}  --source https://api.nuget.org/v3/index.json
