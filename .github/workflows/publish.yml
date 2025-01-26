@@ -6,11 +6,14 @@ on:
   workflow_dispatch: {}
 
 env:
-  solutionPath: ./Source/Seed.IO.sln
   configuration: Release
 
 jobs:
   publish:
+    strategy:
+      matrix:
+        project:
+          - Source\Seed.IO\Seed.IO.csproj
     runs-on: ubuntu-latest
     steps:
     - name: CheckOut
@@ -23,11 +26,11 @@ jobs:
       with: 
         publish: false 
         configuration: ${{ env.configuration }}
-        solutionPath:  ${{ env.solutionPath }}
+        solutionOrProjectPath: ${{ matrix.project }}
     - name: Publish 
       uses: ByronMayne/Shared.Actions/publish_csharp_nuget@1.0.7
       with: 
         publish: true 
         configuration: ${{ env.configuration }}
-        solutionPath: ${{ env.solutionPath }}
+        solutionOrProjectPath: ${{ matrix.project }}
         nugetApiKey: ${{ secrets.NUGET_API_KEY }}
