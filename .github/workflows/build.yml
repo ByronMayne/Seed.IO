@@ -3,7 +3,6 @@ name: Build
 on: [push]
 
 env:
-  solutionPath: ./Source/Seed.IO.sln
   configuration: Release
 
 jobs:
@@ -11,7 +10,7 @@ jobs:
     strategy:
       matrix:
         project:
-          - Source\Seed.IO\Seed.IO.csproj
+          - Source/Seed.IO/Seed.IO.csproj
     runs-on: ubuntu-latest
     steps:
     - name: CheckOut

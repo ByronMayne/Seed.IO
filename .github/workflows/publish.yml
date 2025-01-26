@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         project:
-          - Source\Seed.IO\Seed.IO.csproj
+          - Source/Seed.IO/Seed.IO.csproj
     runs-on: ubuntu-latest
     steps:
     - name: CheckOut
