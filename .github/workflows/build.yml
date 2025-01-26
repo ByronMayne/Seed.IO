@@ -3,12 +3,14 @@ name: Build
 on: [push]
 
 env:
-  solutionPath: ./Source/Seed.IO.sln
   configuration: Release
-
 
 jobs:
   build:
+    strategy:
+      matrix:
+        project:
+          - Source/Seed.IO/Seed.IO.csproj
     runs-on: ubuntu-latest
     steps:
     - name: CheckOut
@@ -17,9 +19,9 @@ jobs:
         ref: ${{ github.head_ref }} 
         fetch-depth: 0  
     - name: Build 
-      uses: ByronMayne/Shared.Actions/build_csharp@1.0.3
+      uses: ByronMayne/Shared.Actions/build_csharp@1.0.7
       with: 
         publish: false 
         configuration: ${{ env.configuration }}
-        solutionPath: ${{ env.solutionPath }}
+        solutionOrProjectPath: ${{ matrix.project }}
 
